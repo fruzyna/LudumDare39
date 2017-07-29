@@ -8,7 +8,7 @@ public class Bellow extends AnimatedItem
 	
 	public Bellow(int startX, int startY, int width, int height)
 	{
-		super(startX, startY, width, height, new File("res/bellow.png"));
+		super(startX, startY, width, height, new File("res/bellow.png"), new File("res/bellowB.png"));
 	}
 
 	@Override

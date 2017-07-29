@@ -114,9 +114,26 @@ public class Player extends Entity implements Runnable
 			{
 				game.bellow.push(game);
 			}
+			else if(getDistance(game.bellow) <= width)
+			{
+				game.bellow.push(game);
+			}
 			else
 			{
-				pickup(game.entities);
+				boolean fixed = false;
+				for(Wire wire : game.wires)
+				{
+					if(wire.broken && getDistance(wire) <= width)
+					{
+						wire.attemptFix(game);
+						fixed = true;
+						break;
+					}
+				}
+				if(!fixed)
+				{
+					pickup(game.entities);
+				}
 			}
 		}
 	}

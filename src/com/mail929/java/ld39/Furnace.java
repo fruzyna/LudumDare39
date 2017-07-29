@@ -13,7 +13,7 @@ public class Furnace extends AnimatedItem
 	
 	public Furnace(int startX, int startY, int width, int height)
 	{
-		super(startX, startY, width, height, new File("res/furnace.png"));
+		super(startX, startY, width, height, new File("res/furnace.png"), new File("res/furnaceB.png"));
 		coal = 0;
 		oxyLevel = 1;
 	}
@@ -22,7 +22,7 @@ public class Furnace extends AnimatedItem
 	public void run(InGame game)
 	{
 		maxProduction = maxCoal * maxOxy;
-		game.energyProduction = coal * oxyLevel;
+		game.energyProduction = (int) (coal * oxyLevel * game.productionMulti);
 		if(game.storedEnergy > game.maxStored)
 		{
 			game.storedEnergy = game.maxStored;

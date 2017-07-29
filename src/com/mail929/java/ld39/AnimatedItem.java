@@ -10,15 +10,18 @@ import javax.imageio.ImageIO;
 public class AnimatedItem extends Entity
 {
 	int counts = 0;
-	int resetCount = 2;
+	int resetCount = 30;
 	BufferedImage image;
+	BufferedImage imageB;
+	boolean a = true;
 	
-	public AnimatedItem(int startX, int startY, int width, int height, File imageFile)
+	public AnimatedItem(int startX, int startY, int width, int height, File imageFile, File imageFileB)
 	{
 		super(startX, startY, width, height);
 		try
 		{
 			image = ImageIO.read(imageFile);
+			imageB = ImageIO.read(imageFileB);
 		} catch (IOException e)
 		{
 			e.printStackTrace();
@@ -30,6 +33,7 @@ public class AnimatedItem extends Entity
 		if(counts == resetCount)
 		{
 			counts = 0;
+			a = !a;
 			//switch which image is drawn
 		}
 		/*g.setColor(Color.ORANGE);
@@ -37,7 +41,14 @@ public class AnimatedItem extends Entity
 		
 		for(int i = 0; i * image.getWidth() < width; i++)
 		{
-			g.drawImage(image, x+(i * image.getWidth()), y, null);
+			if(a)
+			{
+				g.drawImage(image, x+(i * image.getWidth()), y, null);
+			}
+			else
+			{
+				g.drawImage(imageB, x+(i * image.getWidth()), y, null);
+			}
 		}
 		
 		counts++;

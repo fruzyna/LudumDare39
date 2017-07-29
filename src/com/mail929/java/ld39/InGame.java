@@ -18,6 +18,7 @@ public class InGame extends Mode
 	int maxStored = 10000;
 	int demand = 0;
 	int money = 0;
+	double productionMulti = 1;
 	double coalRate = .75;
 	
 	Player player;
@@ -27,6 +28,9 @@ public class InGame extends Mode
 	int yEdges;
 	Furnace furnace;
 	Bellow bellow;
+	List<Wire> wires;
+	Generator leftGen;
+	Generator rightGen;
 	ProgressBar oxyLevel;
 	ProgressBar prodLevel;
 	ProgressBar storedLevel;
@@ -54,13 +58,32 @@ public class InGame extends Mode
 
 		//add conveyer belt
 		int beltHeight = 50;
-		animatedItems.add(new AnimatedItem(xEdges, Window.height - yEdges - beltHeight, (int)(Window.width * floorPercent), beltHeight, new File("res/conveyer.png")));
+		animatedItems.add(new AnimatedItem(xEdges, Window.height - yEdges - beltHeight, (int)(Window.width * floorPercent), beltHeight, new File("res/conveyer.png"), new File("res/conveyerB.png")));
 		
 		//add conveyer belt
 		int bellowWidth = 50;
 		bellow = new Bellow((Window.width + bellowWidth) / 2, yEdges + 50 , bellowWidth, 50);
 		animatedItems.add(bellow);
 
+		//add generators
+		int genWidth = 50;
+		leftGen = new Generator(Window.width / 2 - furnaceWidth, yEdges, genWidth, 50);
+		animatedItems.add(leftGen);
+		rightGen = new Generator(Window.width / 2 + furnaceWidth/2, yEdges, genWidth, 50);
+		animatedItems.add(rightGen);
+
+		int wireWidth = 50;
+		wires = new ArrayList<>();
+		animatedItems.add(new Wire(xEdges + 0, yEdges, wireWidth, 50));
+		wires.add((Wire)animatedItems.get(animatedItems.size() - 1));
+		animatedItems.add(new Wire(xEdges + wireWidth, yEdges, wireWidth, 50));
+		wires.add((Wire)animatedItems.get(animatedItems.size() - 1));
+		animatedItems.add(new Wire(Window.width - wireWidth * 2 - xEdges, yEdges, wireWidth, 50));
+		wires.add((Wire)animatedItems.get(animatedItems.size() - 1));
+		animatedItems.add(new Wire(Window.width - wireWidth - xEdges, yEdges, wireWidth, 50));
+		wires.add((Wire)animatedItems.get(animatedItems.size() - 1));
+		
+		//add progress bars
 		oxyLevel = new ProgressBar(1, 1, 100, 20, furnace.oxyLevel, furnace.maxOxy, "Oxygen");
 		prodLevel = new ProgressBar(105, 1, 100, 20, energyProduction, furnace.maxProduction, "Production");
 		storedLevel = new ProgressBar(210, 1, 100, 20, storedEnergy, maxStored, "Stored Energy");
@@ -125,6 +148,7 @@ public class InGame extends Mode
 			
 			demand = loops;
 			
+			energyProduction *= productionMulti;
 			//run animated items
 			for(AnimatedItem item : animatedItems)
 			{
