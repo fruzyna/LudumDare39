@@ -34,9 +34,16 @@ public class Player extends Entity implements Runnable
 	@Override
 	public void draw(Graphics g)
 	{
-		g.setColor(Color.GREEN);
-		g.fillRect(x, y, width, height);
-		g.drawImage(image, x, y, null);
+		/*g.setColor(Color.GREEN);
+		g.fillRect(x, y, width, height);*/
+		if(xTrans >= 0)
+		{
+			g.drawImage(image, x, y, null);
+		}
+		else
+		{
+			g.drawImage(image, x + width, y, -width, height, null);
+		}
 	}
 
 	@Override
@@ -92,6 +99,25 @@ public class Player extends Entity implements Runnable
 		else if(yTrans < -1)
 		{
 			yTrans = -1;
+		}
+	}
+	
+	public void action(InGame game)
+	{
+		if(carrying != null)
+		{
+			pickup(game.entities);
+		}
+		else
+		{
+			if(getDistance(game.bellow) <= width)
+			{
+				game.bellow.push(game);
+			}
+			else
+			{
+				pickup(game.entities);
+			}
 		}
 	}
 	

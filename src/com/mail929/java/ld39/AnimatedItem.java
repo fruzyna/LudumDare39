@@ -33,8 +33,8 @@ public class AnimatedItem extends Entity
 			counts = 0;
 			//switch which image is drawn
 		}
-		g.setColor(Color.ORANGE);
-		g.fillRect(x, y, width, height);
+		/*g.setColor(Color.ORANGE);
+		g.fillRect(x, y, width, height);*/
 		
 		for(int i = 0; i * image.getWidth() < width; i++)
 		{

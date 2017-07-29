@@ -15,11 +15,17 @@ public class InGame extends Mode
 	int energyDemand = 10;
 	int energyProduction = 0;
 	int storedEnergy = 0;
+	int maxStored = 10000;
 	Player player;
 	List<Entity> entities;
 	List<AnimatedItem> animatedItems;
 	int xEdges;
 	int yEdges;
+	Furnace furnace;
+	Bellow bellow;
+	ProgressBar oxyLevel;
+	ProgressBar prodLevel;
+	ProgressBar storedLevel;
 	
 	public InGame()
 	{
@@ -35,11 +41,21 @@ public class InGame extends Mode
 		
 		//add furnace
 		int furnaceWidth = 100;
-		animatedItems.add(new Furnace((Window.width - furnaceWidth) / 2, yEdges, furnaceWidth, 50));
-		
+		furnace = new Furnace((Window.width - furnaceWidth) / 2, yEdges, furnaceWidth, 50);
+		animatedItems.add(furnace);
+
 		//add conveyer belt
 		int beltHeight = 50;
 		animatedItems.add(new AnimatedItem(xEdges, Window.height - yEdges - beltHeight, (int)(Window.width * floorPercent), beltHeight, new File("res/conveyer.png")));
+		
+		//add conveyer belt
+		int bellowWidth = 50;
+		bellow = new Bellow((Window.width + bellowWidth) / 2, yEdges + 50 , bellowWidth, 50);
+		animatedItems.add(bellow);
+
+		oxyLevel = new ProgressBar(1, 1, 100, 20, furnace.oxyLevel, furnace.maxOxy, "Oxygen");
+		prodLevel = new ProgressBar(105, 1, 100, 20, energyProduction, furnace.maxProduction, "Production");
+		storedLevel = new ProgressBar(210, 1, 100, 20, storedEnergy, maxStored, "Stored Energy");
 	}
 	
 	@Override
@@ -69,6 +85,9 @@ public class InGame extends Mode
 		}
 		
 		g.drawString("Energy Production: " + energyProduction + " Stored Energy: " + storedEnergy, 12, 12);
+		oxyLevel.draw(g);
+		prodLevel.draw(g);
+		storedLevel.draw(g);
 	}
 
 	@Override
@@ -89,6 +108,10 @@ public class InGame extends Mode
 			{
 				entities.get(i).run(this);
 			}
+
+			oxyLevel.update(furnace.oxyLevel, furnace.maxOxy);
+			prodLevel.update(energyProduction, furnace.maxProduction);
+			storedLevel.update(storedEnergy, maxStored);
 			
 			double random = Math.random();
 			if(random > 0.75)
@@ -158,7 +181,7 @@ public class InGame extends Mode
 				player.moveX(-1);
 				break;
 			case KeyEvent.VK_E:
-				player.pickup(entities);
+				player.action(this);
 			}
 		}
 	}
