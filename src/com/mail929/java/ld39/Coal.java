@@ -11,6 +11,8 @@ public class Coal extends Entity
 	public Coal(int startX, int startY, int width, int height, AnimatedItem conveyerBelt)
 	{
 		super(startX, startY, width, height);
+		x -= width/2;
+		y -= height/2;
 		
 		this.conveyerBelt = conveyerBelt;		
 		onConveyer = true;

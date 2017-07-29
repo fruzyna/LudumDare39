@@ -11,7 +11,6 @@ import java.util.Random;
 public class InGame extends Mode
 {
 	int speed = 1000;
-	double floorPercent = .9;
 	int energyDemand = 10;
 	int energyProduction = 0;
 	int storedEnergy = 0;
@@ -24,8 +23,8 @@ public class InGame extends Mode
 	Player player;
 	List<Entity> entities;
 	List<AnimatedItem> animatedItems;
-	int xEdges;
-	int yEdges;
+	int blockWidth;
+	int blockHeight;
 	Furnace furnace;
 	Bellow bellow;
 	List<Wire> wires;
@@ -41,65 +40,53 @@ public class InGame extends Mode
 	
 	public InGame()
 	{
-		xEdges = (int) ((Window.width * (1 - floorPercent))/2);
-		yEdges = (int) ((Window.height * (1 - floorPercent))/2);
+		blockWidth = Window.width / 10;
+		blockHeight = Window.height / 10;
 		
 		//add player
-		player = new Player(50, 50, Window.height / 10, Window.height / 10);
+		player = new Player(blockWidth, blockHeight, Window.height / 10, Window.height / 10);
 		
 		//entity lists
 		entities = new ArrayList<>();
 		animatedItems = new ArrayList<>();
 		
 		//add furnace
-		int furnaceWidth = 100;
-		furnace = new Furnace((Window.width - furnaceWidth) / 2, yEdges, furnaceWidth, 50);
+		int furnaceWidth = blockWidth * 2;
+		furnace = new Furnace((Window.width - furnaceWidth) / 2, 0, furnaceWidth, blockHeight);
 		animatedItems.add(furnace);
 
 		//add conveyer belt
-		int beltHeight = 50;
-		animatedItems.add(new AnimatedItem(xEdges, Window.height - yEdges - beltHeight, (int)(Window.width * floorPercent), beltHeight, new File("res/conveyer.png"), new File("res/conveyerB.png")));
+		animatedItems.add(new AnimatedItem(0, Window.height - blockHeight, Window.width, blockHeight, new File("res/conveyer.png"), new File("res/conveyerB.png")));
 		
 		//add conveyer belt
-		int bellowWidth = 50;
-		bellow = new Bellow((Window.width + bellowWidth) / 2, yEdges + 50 , bellowWidth, 50);
+		bellow = new Bellow((Window.width + blockWidth) / 2, blockHeight , blockWidth, blockHeight);
 		animatedItems.add(bellow);
 
 		//add generators
-		int genWidth = 50;
-		leftGen = new Generator(Window.width / 2 - furnaceWidth, yEdges, genWidth, 50);
+		leftGen = new Generator(Window.width / 2 - furnaceWidth, 0, blockWidth, blockHeight);
 		animatedItems.add(leftGen);
-		rightGen = new Generator(Window.width / 2 + furnaceWidth/2, yEdges, genWidth, 50);
+		rightGen = new Generator(Window.width / 2 + furnaceWidth/2, 0, blockWidth, blockHeight);
 		animatedItems.add(rightGen);
 
-		int wireWidth = 50;
 		wires = new ArrayList<>();
-		animatedItems.add(new Wire(xEdges + 0, yEdges, wireWidth, 50));
+		animatedItems.add(new Wire(0, 0, blockWidth*3, blockHeight));
 		wires.add((Wire)animatedItems.get(animatedItems.size() - 1));
-		animatedItems.add(new Wire(xEdges + wireWidth, yEdges, wireWidth, 50));
-		wires.add((Wire)animatedItems.get(animatedItems.size() - 1));
-		animatedItems.add(new Wire(Window.width - wireWidth * 2 - xEdges, yEdges, wireWidth, 50));
-		wires.add((Wire)animatedItems.get(animatedItems.size() - 1));
-		animatedItems.add(new Wire(Window.width - wireWidth - xEdges, yEdges, wireWidth, 50));
+		animatedItems.add(new Wire(Window.width - blockWidth*3, 0, blockWidth*3, blockHeight));
 		wires.add((Wire)animatedItems.get(animatedItems.size() - 1));
 		
 		//add progress bars
-		oxyLevel = new ProgressBar(1, 1, 100, 20, furnace.oxyLevel, furnace.maxOxy, "Oxygen");
-		prodLevel = new ProgressBar(105, 1, 100, 20, energyProduction, furnace.maxProduction, "Production");
-		storedLevel = new ProgressBar(210, 1, 100, 20, storedEnergy, maxStored, "Stored Energy");
-		demandLevel = new ProgressBar(315, 1, 100, 20, 1, 1, "Fullfillment");
+		oxyLevel = new ProgressBar(0, 0, 100, 20, furnace.oxyLevel, furnace.maxOxy, "Oxygen");
+		prodLevel = new ProgressBar(105, 0, 100, 20, energyProduction, furnace.maxProduction, "Production");
+		storedLevel = new ProgressBar(210, 0, 100, 20, storedEnergy, maxStored, "Stored Energy");
+		demandLevel = new ProgressBar(315, 0, 100, 20, 1, 1, "Fullfillment");
 	}
 	
 	@Override
 	public void draw(Graphics g)
-	{
-		//draw walls
-		g.setColor(Color.RED);
-		g.fillRect(0, 0, Window.width, Window.height);
-		
+	{		
 		//draw floor
 		g.setColor(Color.DARK_GRAY);
-		g.fillRect(xEdges, yEdges, (int) (Window.width * floorPercent), (int) (Window.height * floorPercent));
+		g.fillRect(0, 0, Window.width, Window.height);
 
 		//draw animated items
 		for(AnimatedItem item : animatedItems)
@@ -116,19 +103,28 @@ public class InGame extends Mode
 			entity.draw(g);
 		}
 		
-		g.setColor(Color.GREEN);
-		g.drawString("Money: " + money, 12, 25 + g.getFont().getSize());
-		oxyLevel.draw(g);
-		prodLevel.draw(g);
-		storedLevel.draw(g);
-		demandLevel.draw(g);
-		
 		if(menu != null)
 		{
 			menu.draw(g);
 		}
 	}
 
+	@Override
+	public void drawStatus(Graphics g)
+	{
+		//draw floor
+		g.setColor(Color.DARK_GRAY);
+		g.fillRect(0, 0, Window.width, Window.statusHeight);
+		
+		oxyLevel.draw(g);
+		prodLevel.draw(g);
+		storedLevel.draw(g);
+		demandLevel.draw(g);
+		
+		g.setColor(Color.GREEN);
+		g.drawString("Money: " + money, 420, 2+g.getFont().getSize());
+	}
+	
 	@Override
 	public void run()
 	{
@@ -174,7 +170,7 @@ public class InGame extends Mode
 			for(int i = 0; i < random; i++)
 			{
 				int height = (int)(Math.random() * animatedItems.get(1).height);
-				entities.add(new Coal((int)(Window.width * floorPercent) + xEdges, Window.height - yEdges - height, 10, 10, animatedItems.get(1)));
+				entities.add(new Coal(Window.width, Window.height - height, blockWidth/5, blockHeight/5, animatedItems.get(1)));
 			}
 			
 			storedEnergy -= demand;

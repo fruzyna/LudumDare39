@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 public abstract class Mode implements Runnable
 {
 	public abstract void draw(Graphics g);
+	public abstract void drawStatus(Graphics g);
 	
 	@Override
 	public abstract void run();

@@ -1,6 +1,8 @@
 package com.mail929.java.ld39;
 
 import java.awt.Graphics;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +41,15 @@ public class AnimatedItem extends Entity
 		/*g.setColor(Color.ORANGE);
 		g.fillRect(x, y, width, height);*/
 		
-		for(int i = 0; i * image.getWidth() < width; i++)
+		if(a)
+		{
+			g.drawImage(image, x, y, width, height, null);
+		}
+		else
+		{
+			g.drawImage(imageB, x, y, width, height, null);
+		}
+		/*for(int i = 0; i * image.getWidth() < width; i++)
 		{
 			if(a)
 			{
@@ -49,7 +59,7 @@ public class AnimatedItem extends Entity
 			{
 				g.drawImage(imageB, x+(i * image.getWidth()), y, null);
 			}
-		}
+		}*/
 		
 		counts++;
 	}

@@ -20,7 +20,7 @@ public class Wire extends AnimatedItem
 		if(game.energyProduction >= game.furnace.maxProduction * game.productionMulti && !broken)
 		{
 			broken = true;
-			game.productionMulti -= 0.25;
+			game.productionMulti -= 0.5;
 			game.energyProduction = 0;
 			Game.log("Broken");
 			try
@@ -39,7 +39,7 @@ public class Wire extends AnimatedItem
 		if(chance < 0.1)
 		{
 			broken = false;
-			game.productionMulti += 0.25;
+			game.productionMulti += 0.5;
 			try
 			{
 				image = ImageIO.read(new File("res/wire.png"));

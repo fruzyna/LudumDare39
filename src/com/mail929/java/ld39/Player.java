@@ -38,7 +38,7 @@ public class Player extends Entity implements Runnable
 		g.fillRect(x, y, width, height);*/
 		if(xTrans >= 0)
 		{
-			g.drawImage(image, x, y, null);
+			g.drawImage(image, x, y, width, height, null);
 		}
 		else
 		{
