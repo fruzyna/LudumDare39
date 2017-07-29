@@ -1,6 +1,5 @@
 package com.mail929.java.ld39;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;

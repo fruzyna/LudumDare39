@@ -7,8 +7,9 @@ public class Furnace extends AnimatedItem
 	int coal;
 	int oxyLevel;
 	int maxOxy = 100;
-	int maxCoal = 5;
+	int maxCoal = 15;
 	int maxProduction;
+	int burnTime = 5;
 	
 	public Furnace(int startX, int startY, int width, int height)
 	{
@@ -50,7 +51,7 @@ public class Furnace extends AnimatedItem
 			if(isOn(e) && e instanceof Coal && game.player.carrying != e && coal <= maxCoal)
 			{
 				game.entities.remove(i);
-				coal += 5;
+				coal += burnTime;
 				if(coal > maxCoal)
 				{
 					coal = maxCoal;

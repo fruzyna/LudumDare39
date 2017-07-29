@@ -16,6 +16,10 @@ public class InGame extends Mode
 	int energyProduction = 0;
 	int storedEnergy = 0;
 	int maxStored = 10000;
+	int demand = 0;
+	int money = 0;
+	double coalRate = .75;
+	
 	Player player;
 	List<Entity> entities;
 	List<AnimatedItem> animatedItems;
@@ -26,6 +30,10 @@ public class InGame extends Mode
 	ProgressBar oxyLevel;
 	ProgressBar prodLevel;
 	ProgressBar storedLevel;
+	ProgressBar demandLevel;
+	
+	MoneyMenu menu;
+	
 	
 	public InGame()
 	{
@@ -56,6 +64,7 @@ public class InGame extends Mode
 		oxyLevel = new ProgressBar(1, 1, 100, 20, furnace.oxyLevel, furnace.maxOxy, "Oxygen");
 		prodLevel = new ProgressBar(105, 1, 100, 20, energyProduction, furnace.maxProduction, "Production");
 		storedLevel = new ProgressBar(210, 1, 100, 20, storedEnergy, maxStored, "Stored Energy");
+		demandLevel = new ProgressBar(315, 1, 100, 20, 1, 1, "Fullfillment");
 	}
 	
 	@Override
@@ -84,10 +93,17 @@ public class InGame extends Mode
 			entity.draw(g);
 		}
 		
-		g.drawString("Energy Production: " + energyProduction + " Stored Energy: " + storedEnergy, 12, 12);
+		g.setColor(Color.GREEN);
+		g.drawString("Money: " + money, 12, 25 + g.getFont().getSize());
 		oxyLevel.draw(g);
 		prodLevel.draw(g);
 		storedLevel.draw(g);
+		demandLevel.draw(g);
+		
+		if(menu != null)
+		{
+			menu.draw(g);
+		}
 	}
 
 	@Override
@@ -95,7 +111,19 @@ public class InGame extends Mode
 	{
 		for(int loops = 0; Game.running; loops++)
 		{
+			while(menu != null)
+			{
+				try
+				{
+					Thread.sleep(50);
+				} catch (InterruptedException e)
+				{
+					e.printStackTrace();
+				}
+			}
 			long start = System.currentTimeMillis();
+			
+			demand = loops;
 			
 			//run animated items
 			for(AnimatedItem item : animatedItems)
@@ -109,12 +137,9 @@ public class InGame extends Mode
 				entities.get(i).run(this);
 			}
 
-			oxyLevel.update(furnace.oxyLevel, furnace.maxOxy);
-			prodLevel.update(energyProduction, furnace.maxProduction);
-			storedLevel.update(storedEnergy, maxStored);
-			
+	
 			double random = Math.random();
-			if(random > 0.75)
+			if(random > coalRate)
 			{
 				random = 1;
 			}
@@ -127,6 +152,22 @@ public class InGame extends Mode
 				int height = (int)(Math.random() * animatedItems.get(1).height);
 				entities.add(new Coal((int)(Window.width * floorPercent) + xEdges, Window.height - yEdges - height, 10, 10, animatedItems.get(1)));
 			}
+			
+			storedEnergy -= demand;
+			if(storedEnergy > 0)
+			{
+				demandLevel.update(demand, demand);
+				money += demand;
+			}
+			else
+			{
+				demandLevel.update(demand + storedEnergy, demand);
+				money += demand + storedEnergy;
+				storedEnergy = 0;
+			}
+			oxyLevel.update(furnace.oxyLevel, furnace.maxOxy);
+			prodLevel.update(energyProduction, furnace.maxProduction);
+			storedLevel.update(storedEnergy, maxStored);
 			
 			try
 			{
@@ -146,7 +187,11 @@ public class InGame extends Mode
 	@Override
 	public void keyChange(KeyEvent e, boolean press)
 	{
-		if(press)
+		if(menu != null)
+		{
+			menu.keyChange(this, e, press);
+		}
+		else if(press)
 		{
 			switch(e.getKeyCode())
 			{
@@ -182,6 +227,10 @@ public class InGame extends Mode
 				break;
 			case KeyEvent.VK_E:
 				player.action(this);
+				break;
+			case KeyEvent.VK_M:
+				menu = new MoneyMenu();
+				break;
 			}
 		}
 	}
