@@ -2,7 +2,12 @@ package com.mail929.java.ld39;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 
 public class Player extends Entity implements Runnable
 {
@@ -10,12 +15,20 @@ public class Player extends Entity implements Runnable
 	int yTrans = 0;
 	Thread playerThread;
 	Entity carrying;
+	BufferedImage image;
 	
 	public Player(int startX, int startY, int width, int height)
 	{
 		super(startX, startY, width, height);
 		playerThread = new Thread(this);
 		playerThread.start();
+		try
+		{
+			image = ImageIO.read(new File("res/player.png"));
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -23,6 +36,7 @@ public class Player extends Entity implements Runnable
 	{
 		g.setColor(Color.GREEN);
 		g.fillRect(x, y, width, height);
+		g.drawImage(image, x, y, null);
 	}
 
 	@Override

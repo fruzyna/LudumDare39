@@ -2,15 +2,28 @@ package com.mail929.java.ld39;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 public class AnimatedItem extends Entity
 {
 	int counts = 0;
 	int resetCount = 2;
+	BufferedImage image;
 	
-	public AnimatedItem(int startX, int startY, int width, int height)
+	public AnimatedItem(int startX, int startY, int width, int height, File imageFile)
 	{
 		super(startX, startY, width, height);
+		try
+		{
+			image = ImageIO.read(imageFile);
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	public void draw(Graphics g)
@@ -22,6 +35,12 @@ public class AnimatedItem extends Entity
 		}
 		g.setColor(Color.ORANGE);
 		g.fillRect(x, y, width, height);
+		
+		for(int i = 0; i * image.getWidth() < width; i++)
+		{
+			g.drawImage(image, x+(i * image.getWidth()), y, null);
+		}
+		
 		counts++;
 	}
 	

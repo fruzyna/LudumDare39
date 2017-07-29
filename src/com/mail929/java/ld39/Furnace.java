@@ -1,5 +1,7 @@
 package com.mail929.java.ld39;
 
+import java.io.File;
+
 public class Furnace extends AnimatedItem
 {
 	int coal;
@@ -7,7 +9,7 @@ public class Furnace extends AnimatedItem
 	
 	public Furnace(int startX, int startY, int width, int height)
 	{
-		super(startX, startY, width, height);
+		super(startX, startY, width, height, new File("res/furnace.png"));
 		coal = 0;
 		oxyLevel = 1;
 	}
@@ -29,7 +31,7 @@ public class Furnace extends AnimatedItem
 		for(int i = 0; i < game.entities.size(); i++)
 		{
 			Entity e = game.entities.get(i);
-			if(isOn(e) && e instanceof Coal)
+			if(isOn(e) && e instanceof Coal && game.player.carrying != e)
 			{
 				game.entities.remove(i);
 				coal += 5;

@@ -3,8 +3,10 @@ package com.mail929.java.ld39;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class InGame extends Mode
 {
@@ -36,11 +38,8 @@ public class InGame extends Mode
 		animatedItems.add(new Furnace((Window.width - furnaceWidth) / 2, yEdges, furnaceWidth, 50));
 		
 		//add conveyer belt
-		int furnaceHeight = 50;
-		animatedItems.add(new AnimatedItem(xEdges, Window.height - yEdges - furnaceHeight, (int)(Window.width * floorPercent), furnaceHeight));
-		
-		//add coal (test will be random eventually)
-		entities.add(new Coal((int)(Window.width * floorPercent) + xEdges, Window.height - yEdges - furnaceHeight, 10, 10, animatedItems.get(1)));
+		int beltHeight = 50;
+		animatedItems.add(new AnimatedItem(xEdges, Window.height - yEdges - beltHeight, (int)(Window.width * floorPercent), beltHeight, new File("res/conveyer.png")));
 	}
 	
 	@Override
@@ -89,6 +88,21 @@ public class InGame extends Mode
 			for(int i = 0; i < entities.size(); i++)
 			{
 				entities.get(i).run(this);
+			}
+			
+			double random = Math.random();
+			if(random > 0.75)
+			{
+				random = 1;
+			}
+			else
+			{
+				random = 0;
+			}
+			for(int i = 0; i < random; i++)
+			{
+				int height = (int)(Math.random() * animatedItems.get(1).height);
+				entities.add(new Coal((int)(Window.width * floorPercent) + xEdges, Window.height - yEdges - height, 10, 10, animatedItems.get(1)));
 			}
 			
 			try
