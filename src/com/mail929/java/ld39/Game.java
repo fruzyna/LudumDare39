@@ -1,5 +1,16 @@
 package com.mail929.java.ld39;
 
+import java.io.File;
+import java.io.IOException;
+
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
 public class Game
 {
 	static boolean running;
@@ -41,5 +52,26 @@ public class Game
 		running = true;
 		gameThread.start();
 		window = new Window();
+	}
+	
+	public static void playSound(File soundFile)
+	{
+	    AudioInputStream stream;
+	    AudioFormat format;
+	    DataLine.Info info;
+	    Clip clip;
+
+	    try
+		{
+			stream = AudioSystem.getAudioInputStream(soundFile);
+		    format = stream.getFormat();
+		    info = new DataLine.Info(Clip.class, format);
+		    clip = (Clip) AudioSystem.getLine(info);
+		    clip.open(stream);
+		    clip.start();
+		} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e)
+		{
+			e.printStackTrace();
+		}
 	}
 }

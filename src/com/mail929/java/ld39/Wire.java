@@ -22,7 +22,7 @@ public class Wire extends AnimatedItem
 			broken = true;
 			game.productionMulti -= 0.5;
 			game.energyProduction = 0;
-			Game.log("Broken");
+			Game.playSound(new File("res/wire-burst.wav"));
 			try
 			{
 				image = ImageIO.read(new File("res/wire-broken.png"));

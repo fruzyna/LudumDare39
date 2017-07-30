@@ -18,7 +18,7 @@ public class Coal extends Entity
 		onConveyer = true;
 	}
 
-	@Override
+
 	public void draw(Graphics g)
 	{
 		g.setColor(Color.BLACK);

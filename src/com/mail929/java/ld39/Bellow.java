@@ -19,5 +19,6 @@ public class Bellow extends AnimatedItem
 	public void push(InGame game)
 	{
 		game.furnace.oxyLevel += airRate;
+		Game.playSound(new File("res/bellow-blow.wav"));
 	}
 }
